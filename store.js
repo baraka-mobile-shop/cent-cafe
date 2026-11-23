@@ -73,6 +73,16 @@
     write(K.seq, { day: today, n });
     return n;
   }
+  /* === Firebase wiring point (add later) ===
+     Orders are stored in localStorage and sync same-device via BroadcastChannel.
+     For cross-device sync (customer phones -> shop screen): create a Firebase
+     project on the cafe's Google account, load the Firestore SDK in pos.html and
+     site.html, then implement remoteSave to upsert each order into an `orders`
+     collection and subscribe to that collection next to subscribe() below.
+     addOrder and updateOrder are the only two write paths, and both call
+     remoteSave, so one implementation covers the cashier and the site. */
+  function remoteSave(order) { /* no-op in demo mode */ }
+
   function addOrder(o) {
     const list = orders();
     o.id = 'o' + Date.now().toString(36) + Math.floor(Math.random() * 999);
@@ -81,12 +91,13 @@
     o.status = o.status || 'new';
     list.unshift(o);
     saveOrders(list.slice(0, 500));
+    remoteSave(o);
     return o;
   }
   function updateOrder(id, patch) {
     const list = orders();
     const i = list.findIndex(o => o.id === id);
-    if (i >= 0) { Object.assign(list[i], patch); saveOrders(list); }
+    if (i >= 0) { Object.assign(list[i], patch); saveOrders(list); remoteSave(list[i]); }
   }
   function todayOrders() { const t = dayKey(); return orders().filter(o => dayKey(new Date(o.ts)) === t); }
 
