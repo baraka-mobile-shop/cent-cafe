@@ -173,7 +173,6 @@
       </div>`}
       <div class="op-totals">
         <div class="trow"><span>المجموع</span><span>${money(t.subtotal)}</span></div>
-        <div class="trow"><span>ضريبة ١٤٪</span><span>${money(t.tax)}</span></div>
         <div class="trow"><span>خصم</span><span><input id="f-disc" type="number" min="0" value="${discount}" style="width:70px"> ج</span></div>
         <div class="trow total"><span>الإجمالي</span><span>${money(t.total)}</span></div>
       </div>
@@ -187,8 +186,8 @@
 
   function totals() {
     const subtotal = cart.reduce((s, c) => s + c.qty * c.unit, 0);
-    const tax = Math.round(subtotal * C.TAX * 10) / 10;
-    const total = Math.max(0, Math.round((subtotal + tax - (discount || 0)) * 10) / 10);
+    const tax = 0;
+    const total = Math.max(0, Math.round((subtotal - (discount || 0)) * 10) / 10);
     return { subtotal, tax, total };
   }
 
@@ -342,7 +341,6 @@
         ${i.addons.length || i.notes ? `<div class="r-line" style="font-size:10px;color:#555"><span>${i.addons.map(a => '+ ' + esc(a)).join('، ')} ${esc(i.notes || '')}</span><span></span></div>` : ''}`).join('')}
       <div class="r-dash"></div>
       <div class="r-line"><span>المجموع</span><span>${money(o.subtotal)}</span></div>
-      <div class="r-line"><span>ضريبة ١٤٪</span><span>${money(o.tax)}</span></div>
       ${o.discount ? `<div class="r-line"><span>خصم</span><span>- ${money(o.discount)}</span></div>` : ''}
       <div class="r-line r-total"><span>الإجمالي</span><span>${money(o.total)}</span></div>
       <div class="r-line"><span>الدفع</span><span>${o.pay === 'cash' ? 'كاش' : 'فيزا'}</span></div>
