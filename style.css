@@ -256,4 +256,24 @@ header{background:var(--surface);border-bottom:1px solid var(--line);padding:10p
   .top-item{padding:4px 0}
   .card{padding:12px 14px}
   .toolbar{margin-bottom:10px}
-               }
+}
+
+/* QR tables view */
+.qr-controls{margin-bottom:16px}
+.qr-controls h3{margin-bottom:6px}
+.qr-hint{font-size:12.5px;color:var(--muted);margin-bottom:12px;line-height:1.7}
+.qr-ctrl-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qr-ctrl-row label{font-size:13px;font-weight:700;color:var(--muted)}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.qr-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.qr-card .qr-brand{font-size:20px}
+.qr-card .qr-box{width:148px;height:148px;display:flex;align-items:center;justify-content:center}
+.qr-card b{font-size:15px}
+.qr-card small{font-size:11px;color:var(--muted)}
+@media print{
+  body.print-qr #receipt{display:none !important}
+  body.print-qr #root *{visibility:hidden}
+  body.print-qr .qr-grid, body.print-qr .qr-grid *{visibility:visible}
+  body.print-qr .qr-grid{position:absolute;top:0;right:0;left:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px}
+  body.print-qr .qr-card{box-shadow:none;break-inside:avoid}
+}
