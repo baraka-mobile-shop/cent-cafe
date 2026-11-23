@@ -136,4 +136,26 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--ink);direct
 .st-ready{background:var(--green-soft);color:var(--green)}
 .st-done{background:#EEE7DA;color:var(--muted)}
 .field .hint{font-size:11px;color:var(--faint);font-weight:400}
-@media (min-width:760px){ .s-bottom{display:flex} }
+
+/* responsiveness fixes */
+.s-cats{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.s-cats::-webkit-scrollbar{display:none}
+.pop-row{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.pop-row::-webkit-scrollbar{display:none}
+@media (max-width:420px){
+  .s-page{padding:12px}
+  .hero{padding:18px 16px;border-radius:18px}
+  .hero h1{font-size:28px}
+  .hero p{font-size:12.5px}
+  .ot-card b{font-size:11px}
+  .ot-card small{font-size:9.5px}
+  .s-brand b{font-size:20px}
+  .add-bar{padding:10px 12px;gap:8px}
+  .big-btn{font-size:13.5px}
+  .sheet-hero{padding:38px 16px 18px}
+  .ord-box .num{font-size:28px}
+}
+@media (max-width:340px){
+  .ot-card .ic{width:32px;height:32px}
+  .pop-card{width:118px}
+}
