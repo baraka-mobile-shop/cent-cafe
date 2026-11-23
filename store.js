@@ -41,7 +41,7 @@
     { id: 'caramel', name: 'كراميل', price: 10 },
   ];
 
-  const TAX = 0.14;
+  const TAX = 0;
   const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('cent-sync') : null;
 
   function read(key, fallback) {
@@ -145,13 +145,14 @@
 
   /* demo live tickets (first run only) */
   function seedLive() {
-    if (read('cent_seeded_v1', false)) return;
-    write('cent_seeded_v1', true);
+    if (read('cent_seeded_v2', false)) return;
+    write('cent_seeded_v2', true);
+    if (read('cent_seeded_v1', false)) write(K.orders, []);
     const mk = (type, table, items, status, minsAgo, source, pay) => {
       const total = items.reduce((s, i) => s + i.total, 0);
       addOrder({
-        type, table, items, subtotal: total, tax: Math.round(total * TAX * 10) / 10,
-        discount: 0, total: Math.round(total * (1 + TAX) * 10) / 10,
+        type, table, items, subtotal: total, tax: 0,
+        discount: 0, total,
         pay: pay || 'cash', source: source || 'pos', status, ts: Date.now() - minsAgo * 60000
       });
     };
