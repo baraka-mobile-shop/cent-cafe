@@ -43,6 +43,7 @@
       <a class="navtab ${active === 'barista' ? 'active' : ''}" href="#barista" data-v="barista">التحضير</a>
       ${session.role === 'manager' ? `
       <a class="navtab ${active === 'menu' ? 'active' : ''}" href="#menu" data-v="menu">المنيو</a>
+      <a class="navtab ${active === 'qr' ? 'active' : ''}" href="#qr" data-v="qr">QR الطاولات</a>
       <a class="navtab ${active === 'reports' ? 'active' : ''}" href="#reports" data-v="reports">التقارير</a>` : ''}` : '';
     return `<header>
       <a class="brand" href="#cashier" data-v="cashier">
@@ -552,6 +553,51 @@
     };
   }
 
+  /* ---------- QR tables ---------- */
+  function siteBase() { return location.href.slice(0, location.href.lastIndexOf('/') + 1) + 'site.html'; }
+  let qrCount = parseInt(localStorage.getItem('cent_qr_count') || '12', 10) || 12;
+  function renderQr() {
+    root.innerHTML = header('qr') + `<div class="page">
+      <div class="card qr-controls">
+        <h3>QR الطاولات</h3>
+        <p class="qr-hint">اطبع والصق كل QR على ترابيزته. العميل يمسحه ويطلب من موبايله، والطلب يوصل لشاشة التحضير برقم الطاولة.</p>
+        <div class="qr-ctrl-row">
+          <label>عدد الطاولات</label>
+          <input id="qr-count" type="number" min="1" max="60" value="${qrCount}" style="width:80px">
+          <button class="btn primary" id="qr-gen">حدّث الرموز</button>
+          <button class="btn dark" id="qr-print">🖨 طباعة الكل</button>
+        </div>
+      </div>
+      <div class="qr-grid" id="qr-grid"></div>
+    </div>`;
+    bindHeader();
+    const draw = () => {
+      const grid = document.getElementById('qr-grid');
+      grid.innerHTML = '';
+      for (let n = 1; n <= qrCount; n++) {
+        const url = siteBase() + '?table=' + n;
+        const card = document.createElement('div');
+        card.className = 'qr-card';
+        card.innerHTML = `<div class="qr-brand"><span class="wordmark">Cent</span></div><div class="qr-box"></div><b>طاولة ${C.fmt(n)}</b><small>امسح واطلب</small>`;
+        grid.appendChild(card);
+        try {
+          new QRCode(card.querySelector('.qr-box'), { text: url, width: 148, height: 148, correctLevel: QRCode.CorrectLevel.M });
+        } catch (e) { card.querySelector('.qr-box').textContent = 'QR error'; }
+      }
+    };
+    document.getElementById('qr-gen').onclick = () => {
+      qrCount = Math.max(1, Math.min(60, parseInt(document.getElementById('qr-count').value, 10) || 12));
+      try { localStorage.setItem('cent_qr_count', String(qrCount)); } catch (e) {}
+      draw();
+    };
+    document.getElementById('qr-print').onclick = () => {
+      document.body.classList.add('print-qr');
+      window.print();
+      setTimeout(() => document.body.classList.remove('print-qr'), 400);
+    };
+    draw();
+  }
+
   /* ---------- chrome ---------- */
   function bindHeader() {
     const lock = document.getElementById('btn-lock');
@@ -568,6 +614,7 @@
     else if (view === 'barista') renderBarista();
     else if (view === 'menu' && session.role === 'manager') renderMenu();
     else if (view === 'reports' && session.role === 'manager') renderReports();
+    else if (view === 'qr' && session.role === 'manager') renderQr();
     else { view = 'cashier'; renderCashier(); bindHeader(); }
     if (PREVIEW && params.get('modal')) openItemModal(params.get('modal'));
   }
